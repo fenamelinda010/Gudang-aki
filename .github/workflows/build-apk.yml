@@ -25,6 +25,11 @@ jobs:
           unzip -o "GudangAki_GitHub_BuildKit (2).zip" -d paket
           unzip -o paket/GudangAkiBuildKit/Gudang_Aki_Android_Source.zip -d project
 
+      - name: Perbaiki target Java dan Kotlin
+        working-directory: project
+        run: |
+          sed -i '/buildFeatures/i\    compileOptions {\n        sourceCompatibility = JavaVersion.VERSION_17\n        targetCompatibility = JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = "17"\n    }' app/build.gradle.kts
+
       - name: Siapkan Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
