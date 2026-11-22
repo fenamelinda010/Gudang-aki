@@ -9,24 +9,33 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Ambil kode aplikasi
+      - name: Ambil kode
         uses: actions/checkout@v4
 
       - name: Siapkan Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: '17'
 
-      - name: Build APK
+      - name: Ekstrak paket
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          mkdir -p paket project
+          unzip -o "GudangAki_GitHub_BuildKit (2).zip" -d paket
+          unzip -o paket/GudangAkiBuildKit/Gudang_Aki_Android_Source.zip -d project
+
+      - name: Siapkan Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Bangun APK
+        working-directory: project
+        run: gradle --no-daemon assembleDebug
 
       - name: Simpan APK
         uses: actions/upload-artifact@v4
         with:
           name: Gudang-Aki-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: project/app/build/outputs/apk/debug/app-debug.apk
